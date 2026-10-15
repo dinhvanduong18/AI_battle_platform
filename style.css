@@ -540,6 +540,9 @@ body::before {
     box-shadow: 0 0 0 3px rgba(79,142,255,0.15);
 }
 .input-group .btn { width: auto; min-width: 80px; }
+#backend-match-section .input-group { flex-wrap: wrap; margin-top: 8px; }
+#backend-match-section .input-group input { min-width: min(100%, 210px); }
+#backend-match-section .input-group .btn { flex: 1; }
 
 /* Lobby divider */
 .lobby-divider {
@@ -1009,3 +1012,415 @@ body::before {
 .cell.capture-anim {
     animation: capture-flash 0.4s ease;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 2: BOT SANDBOX ARENA STYLES
+   ═══════════════════════════════════════════════════════════ */
+
+/* Lobby entry card */
+.bot-arena-entry {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+    transition: var(--transition);
+}
+.bot-arena-entry:hover {
+    border-color: rgba(59, 130, 246, 0.7);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
+}
+.phase-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #60a5fa;
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+}
+.btn-bot-arena {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    font-weight: 700;
+}
+.btn-bot-arena:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+/* Arena Screen Header */
+#bot-arena-screen {
+    background: radial-gradient(circle at 50% 20%, #0f172a 0%, #030712 100%);
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+#bot-arena-screen.active {
+    display: flex;
+}
+#arena-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: rgba(15, 23, 42, 0.75);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    z-index: 20;
+    gap: 16px;
+}
+.arena-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.arena-title-group {
+    display: flex;
+    flex-direction: column;
+}
+.arena-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: -0.01em;
+}
+.arena-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.arena-header-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.turn-badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+.turn-badge.p1 {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.4);
+}
+.turn-badge.p2 {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.4);
+}
+.turn-badge.winner {
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border: 1px solid rgba(250, 204, 21, 0.5);
+    animation: bounce 1s infinite;
+}
+.time-badge {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+}
+.time-badge.danger {
+    color: #ef4444;
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+}
+.arena-status {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Arena Main Content: 2-Column Grid */
+#arena-main-content {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    flex: 1;
+    overflow: hidden;
+    gap: 16px;
+    padding: 16px;
+}
+@media (max-width: 1100px) {
+    #arena-main-content {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+    }
+}
+
+/* Left Column: Board Section */
+.arena-board-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+}
+
+/* Arena HUD */
+.arena-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 580px;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.arena-player {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.player-info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.player-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.player-dot.p1-dot { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+.player-dot.p2-dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.arena-player .player-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.arena-vs-badge {
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Board Wrapper Arena */
+.board-wrapper-arena {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.board-wrapper-arena .board {
+    transform: scale(0.92);
+    transform-origin: center;
+}
+
+/* Arena Toolbar */
+.arena-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 580px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.toolbar-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.form-select-sm {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #f1f5f9;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Right Column: Side Section */
+.arena-side-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    overflow: hidden;
+}
+.arena-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+}
+.arena-card .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.arena-card h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0;
+}
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.config-item label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+.config-item .form-select {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #f1f5f9;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Code Editor */
+#arena-editor-wrapper {
+    flex: 1.2;
+    min-height: 220px;
+}
+.editor-quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.editor-container {
+    flex: 1;
+    display: flex;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #090d16;
+}
+#arena-code-editor {
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    background: transparent;
+    color: #38bdf8;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 10px;
+    tab-size: 4;
+}
+#arena-code-editor:focus {
+    box-shadow: inset 0 0 0 1px #3b82f6;
+}
+.syntax-status {
+    font-size: 0.75rem;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.syntax-status.success { color: #10b981; }
+.syntax-status.error { color: #ef4444; }
+
+/* Telemetry Console Log */
+.arena-log-card {
+    flex: 1;
+    min-height: 160px;
+}
+.arena-log-container {
+    flex: 1;
+    overflow-y: auto;
+    background: #090d16;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 6px 10px;
+    max-height: 180px;
+}
+.arena-log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.log-entry {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: #94a3b8;
+    word-break: break-all;
+}
+.log-entry.attack { color: #fb923c; font-weight: 600; }
+.log-entry.victory { color: #facc15; font-weight: 700; background: rgba(234, 179, 8, 0.1); padding: 2px 4px; border-radius: 4px; }
+.log-entry.error { color: #f87171; font-weight: 600; background: rgba(239, 68, 68, 0.1); padding: 2px 4px; border-radius: 4px; }
+.log-entry.system { color: #60a5fa; }
+.log-entry.move { color: #cbd5e1; }
+.log-time { color: var(--text-muted); font-size: 0.7rem; margin-right: 4px; }
+.btn-clear-log {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.btn-clear-log:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+}
+

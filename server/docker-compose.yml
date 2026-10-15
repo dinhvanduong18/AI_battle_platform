@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ottv2
+      POSTGRES_USER: ott
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    volumes:
+      - ottv2-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ott -d ottv2"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ottv2-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    environment:
+      PORT: 8787
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:8000}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in server/.env}
+      DATABASE_URL: postgres://ott:${POSTGRES_PASSWORD:-change-me}@postgres:5432/ottv2
+      REDIS_URL: redis://redis:6379
+      FIDE_K_FACTOR: ${FIDE_K_FACTOR:-20}
+      QUEUE_MIN_ELO_GAP: ${QUEUE_MIN_ELO_GAP:-100}
+      QUEUE_MAX_ELO_GAP: ${QUEUE_MAX_ELO_GAP:-400}
+      QUEUE_EXPAND_EVERY_MS: ${QUEUE_EXPAND_EVERY_MS:-10000}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_REGION: ${S3_REGION:-auto}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+    ports:
+      - "8787:8787"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  ottv2-postgres:
+  ottv2-redis:

@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OTTv2 — Oẳn Tù Tì v2 Online</title>
-    <meta name="description" content="Trò chơi Oẳn Tù Tì v2 trực tuyến — Cờ chiến thuật Kéo Búa Bao cho 2 người chơi real-time qua PeerJS." />
+    <meta name="description"
+        content="Trò chơi Oẳn Tù Tì v2 trực tuyến — Cờ chiến thuật Kéo Búa Bao cho 2 người chơi real-time qua PeerJS." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
     <!-- ═══════════════════════════════════════════════════ -->
     <!--  LOBBY SCREEN                                      -->
@@ -30,12 +35,13 @@
                 <div class="lobby-section">
                     <h2>Tạo phòng mới</h2>
                     <p class="hint">Tạo phòng rồi gửi mã cho bạn bè</p>
-                    
+
                     <div class="setting-item">
                         <label for="input-piece-count">Số quân cờ cho 1 bên (Tối thiểu 3):</label>
                         <div class="number-input-group">
                             <input type="number" id="input-piece-count" min="3" max="36" value="9" />
-                            <span class="piece-total-hint">(Từ <strong id="total-pieces-label">3</strong> đến 36 quân)</span>
+                            <span class="piece-total-hint">(Từ <strong id="total-pieces-label">3</strong> đến 36
+                                quân)</span>
                         </div>
                     </div>
 
@@ -44,13 +50,33 @@
                     </button>
                 </div>
 
+                <div class="lobby-divider"><span>đấu xếp hạng</span></div>
+
+                <div class="lobby-section" id="backend-match-section">
+                    <h2>Tài khoản & Tìm trận Elo</h2>
+                    <p class="hint" id="backend-account-status">Đăng nhập để tìm đối thủ cùng trình độ qua backend.</p>
+                    <div class="input-group">
+                        <input id="backend-url" type="url" value="http://localhost:8787" aria-label="Backend URL" />
+                        <input id="backend-email" type="email" placeholder="Email" autocomplete="username" />
+                        <input id="backend-password" type="password" placeholder="Mật khẩu (ít nhất 10 ký tự)" autocomplete="current-password" />
+                        <input id="backend-display-name" type="text" placeholder="Tên hiển thị khi đăng ký" maxlength="40" />
+                    </div>
+                    <div class="input-group">
+                        <button id="btn-backend-login" class="btn btn-secondary">Đăng nhập</button>
+                        <button id="btn-backend-register" class="btn btn-secondary">Đăng ký</button>
+                        <button id="btn-find-match" class="btn btn-primary">Tìm trận</button>
+                        <button id="btn-cancel-match" class="btn btn-secondary" disabled>Hủy tìm</button>
+                    </div>
+                </div>
+
                 <div class="lobby-divider"><span>hoặc</span></div>
 
                 <div class="lobby-section">
                     <h2>Vào chơi (Player 2)</h2>
                     <p class="hint">Nhập mã phòng để thi đấu trực tiếp</p>
                     <div class="input-group">
-                        <input type="text" id="input-room" placeholder="Nhập mã phòng…" maxlength="20" autocomplete="off" />
+                        <input type="text" id="input-room" placeholder="Nhập mã phòng…" maxlength="20"
+                            autocomplete="off" />
                         <button id="btn-join" class="btn btn-secondary">
                             <span class="btn-icon">🚀</span> Tham gia
                         </button>
@@ -63,7 +89,8 @@
                     <h2>Vào xem trận đấu (Spectator)</h2>
                     <p class="hint">Xem trực tiếp bất kỳ phòng đấu nào mà không tham gia chơi</p>
                     <div class="input-group">
-                        <input type="text" id="input-spectate-room" placeholder="Nhập mã phòng muốn xem…" maxlength="20" autocomplete="off" />
+                        <input type="text" id="input-spectate-room" placeholder="Nhập mã phòng muốn xem…" maxlength="20"
+                            autocomplete="off" />
                         <button id="btn-spectate" class="btn btn-spectate">
                             <span class="btn-icon">👁️</span> Xem trận
                         </button>
@@ -77,6 +104,18 @@
                     <p class="hint">Xem đồng thời 4 trận đấu trên cùng một màn hình</p>
                     <button id="btn-open-dashboard" class="btn btn-dashboard">
                         <span class="btn-icon">📺</span> Mở Dashboard Multi-Match
+                    </button>
+                </div>
+
+                <div class="lobby-divider"><span>hoặc</span></div>
+
+                <div class="lobby-section bot-arena-entry">
+                    <div class="phase-tag">⚡ GIAI ĐOẠN 2: SANDBOX</div>
+                    <h2>Đấu Trường Bot (Local Battle Arena)</h2>
+                    <p class="hint">Chạy thử Bot JavaScript trong Web Worker Sandbox vs AI mẫu (Random, Greedy, Minimax)
+                    </p>
+                    <button id="btn-open-bot-arena" class="btn btn-bot-arena">
+                        <span class="btn-icon">🤖</span> Vào Đấu Trường Bot
                     </button>
                 </div>
 
@@ -244,8 +283,184 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  BOT SANDBOX ARENA SCREEN (PHASE 2)                -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="bot-arena-screen" class="screen">
+        <header id="arena-header">
+            <div class="arena-header-left">
+                <button id="btn-arena-back-lobby" class="btn btn-secondary btn-sm">
+                    <span>🏠</span> Về sảnh
+                </button>
+                <div class="arena-title-group">
+                    <span class="arena-title">🤖 Bot Sandbox Arena</span>
+                    <span class="arena-subtitle">Seed #<span id="arena-seed-val">—</span> · Nước đi: <span
+                            id="arena-step-count">0</span></span>
+                </div>
+            </div>
+
+            <div class="arena-header-center">
+                <span id="arena-turn-badge" class="turn-badge p1">🔵 Lượt Player 1</span>
+                <span id="arena-time-badge" class="time-badge normal">⚡ —ms / 50ms</span>
+            </div>
+
+            <div class="arena-header-right">
+                <span id="arena-status-text" class="arena-status">Sẵn sàng thi đấu</span>
+            </div>
+        </header>
+
+        <div id="arena-main-content">
+            <!-- Left Column: Board and Match Controls -->
+            <div class="arena-board-section">
+                <!-- Arena HUD -->
+                <div class="arena-hud glass">
+                    <div class="arena-player p1">
+                        <div class="player-info-row">
+                            <span class="player-dot p1-dot"></span>
+                            <span class="player-name">Player 1 (Xanh)</span>
+                        </div>
+                        <div class="piece-count" id="arena-p1-pieces">
+                            <span class="pc rock">✊×3</span>
+                            <span class="pc paper">✋×3</span>
+                            <span class="pc scissors">✌️×3</span>
+                        </div>
+                    </div>
+
+                    <div class="arena-vs-badge">VS</div>
+
+                    <div class="arena-player p2">
+                        <div class="player-info-row">
+                            <span class="player-dot p2-dot"></span>
+                            <span class="player-name">Player 2 (Đỏ)</span>
+                        </div>
+                        <div class="piece-count" id="arena-p2-pieces">
+                            <span class="pc rock">✊×3</span>
+                            <span class="pc paper">✋×3</span>
+                            <span class="pc scissors">✌️×3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Board Wrapper -->
+                <div class="board-wrapper-arena">
+                    <div id="arena-board" class="board"></div>
+                </div>
+
+                <!-- Control Bar -->
+                <div class="arena-toolbar glass">
+                    <div class="toolbar-group">
+                        <button id="btn-arena-start" class="btn btn-primary btn-sm">▶️ Bắt đầu</button>
+                        <button id="btn-arena-pause" class="btn btn-secondary btn-sm" disabled>⏸️ Tạm dừng</button>
+                        <button id="btn-arena-step" class="btn btn-secondary btn-sm">⏭️ Nước tiếp</button>
+                        <button id="btn-arena-reset" class="btn btn-danger btn-sm">🔄 Ván mới</button>
+                    </div>
+
+                    <div class="toolbar-group">
+                        <div class="toolbar-item">
+                            <label for="arena-speed-select">Tốc độ:</label>
+                            <select id="arena-speed-select" class="form-select-sm">
+                                <option value="0">Tức thì (0ms)</option>
+                                <option value="50">Siêu tốc (50ms)</option>
+                                <option value="200" selected>Nhanh (200ms)</option>
+                                <option value="500">Vừa (500ms)</option>
+                                <option value="1000">Chậm (1s)</option>
+                            </select>
+                        </div>
+
+                        <div class="toolbar-item">
+                            <label for="arena-timeout-select">Giới hạn TLE:</label>
+                            <select id="arena-timeout-select" class="form-select-sm">
+                                <option value="50" selected>50ms (Chuẩn)</option>
+                                <option value="100">100ms</option>
+                                <option value="500">500ms</option>
+                                <option value="2000">2000ms (Debug)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Config, Code Editor, and Telemetry Console -->
+            <div class="arena-side-section">
+                <!-- Bot Selector Config -->
+                <div class="arena-card glass">
+                    <div class="card-title-row">
+                        <h3>⚙️ Thiết lập Đối thủ</h3>
+                    </div>
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <label for="arena-p1-select">🔵 Player 1:</label>
+                            <select id="arena-p1-select" class="form-select">
+                                <option value="custom" selected>Bot của tôi (Custom Code)</option>
+                                <option value="minimax">Minimax AI (Alpha-Beta)</option>
+                                <option value="greedy">Greedy AI (Tham lam)</option>
+                                <option value="random">Random Bot (Ngẫu nhiên)</option>
+                                <option value="human">Người chơi (Human)</option>
+                            </select>
+                        </div>
+
+                        <div class="config-item">
+                            <label for="arena-p2-select">🔴 Player 2:</label>
+                            <select id="arena-p2-select" class="form-select">
+                                <option value="minimax" selected>Minimax AI (Alpha-Beta)</option>
+                                <option value="greedy">Greedy AI (Tham lam)</option>
+                                <option value="random">Random Bot (Ngẫu nhiên)</option>
+                                <option value="custom">Bot của tôi (Custom Code)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Editor for Custom Bot -->
+                <div id="arena-editor-wrapper" class="arena-card glass">
+                    <div class="card-title-row">
+                        <h3>💻 Mã Nguồn Bot (JavaScript)</h3>
+                        <div class="editor-quick-actions">
+                            <label for="arena-sample-select">Mẫu:</label>
+                            <select id="arena-sample-select" class="form-select-sm">
+                                <option value="template">Mẫu Starter</option>
+                                <option value="random">Random Bot</option>
+                                <option value="greedy">Greedy AI</option>
+                                <option value="minimax">Minimax AI</option>
+                            </select>
+                            <button id="btn-arena-check-syntax" class="btn btn-secondary btn-sm"
+                                title="Kiểm tra biên dịch">
+                                🔍 Kiểm tra
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="editor-container">
+                        <textarea id="arena-code-editor" spellcheck="false" autocomplete="off"
+                            placeholder="// Viết code hàm getNextMove(myPlayerId, gameState) tại đây..."></textarea>
+                    </div>
+                    <div id="arena-syntax-status" class="syntax-status">Sẵn sàng kiểm tra cú pháp</div>
+                </div>
+
+                <!-- Telemetry Console Log -->
+                <div class="arena-card glass arena-log-card">
+                    <div class="card-title-row">
+                        <h3>📡 Nhật Ký Trận Đấu (Telemetry Console)</h3>
+                        <button id="btn-arena-clear-log" class="btn-clear-log" title="Xóa log">🗑️ Xóa</button>
+                    </div>
+                    <div class="arena-log-container">
+                        <ul id="arena-log-list" class="arena-log-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PeerJS CDN -->
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="shared/OTTGameEngine.js"></script>
+    <script src="client/OTTView.js"></script>
+    <script src="client/sample-bots.js"></script>
+    <script src="client/BotRunner.js"></script>
+    <script src="client/LocalBattleArena.js"></script>
+    <script src="client/P2PConsensus.js"></script>
+    <script src="client/BackendMatchClient.js"></script>
     <script src="game.js"></script>
 </body>
+
 </html>
