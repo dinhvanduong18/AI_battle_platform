@@ -1,1 +1,1 @@
-https://exquisite-tulumba-946db8.netlify.app
+AI_battle_plattform
